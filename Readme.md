@@ -1,87 +1,58 @@
-This project simulates the designed Pulse Width Modulated Wave Generator with Variable Duty Cycle. We can generate PWM wave and varry its DUTYCYCLE in steps of 10%.
 
-Note: Circuit requires further optimization to improve performance. Design yet to be modified.
+# Pulse Width Modulation signal Generator
+This project simulates a variable duty cycle PWM signal generator with verilog. It generates a PWM signal of 10MHz, it has a button to increase the duty cycle by 10% and one to decrease the duty cycle by 10%. The verilog code has been taken from fpga4student.com
 
-Introduction
-Pulse Width Modulation is a famous technique used to create modulated electronic pulses of the desired width. The duty cycle is the ratio of how long that PWM signal stays at the high position to the total time period.
+## Introduction
+A Pulse width modulated signal generator is used widely in the industry in many applications. PWM generator produces a square wave with a fixed time period but a variable duty cycle. Because the PWM can operate at high frequencies, it finds applications as a voltage controller in many devices.
 
+## Applications
+PWM generator is used in many applications like:
 
+* DC/DC and DC/AC cconverters
+* Inverters
+* Controlling brightness of lights
+* Controlling loudness in speakers
+* Controlling speed of motor
 
-Applications
-Pulse Width Modulated Wave Generator can be used to
+## Block Diagram
+<img width="668" alt="Screenshot 2022-08-08 at 11 38 58 PM" src="https://user-images.githubusercontent.com/110840360/183485390-8b13b41f-d19e-4d66-8c4a-bee4367ee150.png">
+<img width="738" alt="PWM1" src="https://user-images.githubusercontent.com/110840360/183486763-baf39a12-0f32-46a2-8774-6863e79282e5.png">
+In a PWM circuit, the pulse frequency is created using a comparator that resets a pulse-window counter, and the duty cycle is set by a comparator that drives the output waveform low whenever the count value is greater than the duty cycle value. Here, we have two buttons to either increase or decrease the duty cycle by 10% as shown above.
 
-control the brightness of the LED
-drive buzzers at different loudnes
-control the angle of the servo motor
-encode messages in telecommunication
-used in speed controlers of motors
-Blocked Diagram of PWM GENERATOR
-This PWM generator generates 10Mhz signal. We can control duty cycles in steps of 10%. The default duty cycle is 50%. Along with clock signal we provide another two external signals to increase and decrease the duty cycle.
+## Tools installation
+The following tools need to be installed:
+* Verilog
+* GTKwave
+* Yosys
 
-
-
-In this specific circuit, we mainly require a n-bit counter and comparator. Duty given to the comparator is compared with the current value of the counter. If current value of counter is lower than duty then comparator results in output high. Similarly, If current value of counter is higher than duty is then comparator results in output low. As counter starts at zero, initially comparator gives high output and when counter crosses duty it becomes low. Hence by controlling duty, we can control duty cycle.
-
-
-
-As the comparator is a combinational circuit and the counter is sequential, while counting from 011 to 100 due to improper delays there might be an intermediate state like 111 which might be higher or lower than duty. This might cause a glitch. To avoid these glitches output of the comparator is passed through a D flipflop.
-
-About iverilog
-Icarus Verilog is an implementation of the Verilog hardware description language.
-
-About GTKWave
-GTKWave is a fully featured GTK+ v1. 2 based wave viewer for Unix and Win32 which reads Ver Structural Verilog Compiler generated AET files as well as standard Verilog VCD/EVCD files and allows their viewing
-
-Installing iverilog and GTKWave
-For Ubuntu
-Open your terminal and type the following to install iverilog and GTKWave
-
-$   sudo apt-get update
-$   sudo apt-get install iverilog gtkwave
-Functional Simulation
-To clone the Repository and download the Netlist files for Simulation, enter the following commands in your terminal.
-
-$   sudo apt install -y git
-$   git clone https://github.com/sanampudig/iiitb_pwm_gen
-$   cd iiitb_pwm_gen
-$   iverilog iiitb_pwm_gen.v iiitb_pwm_gen_tb.v
+## Functional Simulation
+Use the following commands to clone the github repo and run the files:
+'''
+  sudo apt install -y git
+   sudo apt install -y git
+$   git clone https://github.com/pranav1751/iiitb_pwm
+$   cd iiitb_pwm
+$   iverilog iiitb_pwm.v iiitb_pwm_tb.v
 $   ./a.out
 $   gtkwave pwm.vcd
-Functional Characteristics
-Simulation Results while increasing Dutycycle
+'''  
+## Functional Characteristics
+The simulation results when increasing duty cycle
+![image](https://user-images.githubusercontent.com/110840360/183490276-91787469-5c75-4f2f-8465-82a4288d1807.png)
+The simulation results when decreasing duty cycle
+![image](https://user-images.githubusercontent.com/110840360/183490364-4f771446-0e22-4747-8c1b-be7f25e4a3f9.png)
 
+## Contributors
+* Pranav Vajreshwari, iMtech2020 IIITB
+* Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.
 
+## Acknowledgements
+* Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.
 
-Simulation Results while decreasing Dutycycle
+## Contact information
+* Pranav Vajreshwari, Pranav.Vajreshwari@iitb.ac.in
+* Kunal Ghosh, Director, VSD Corp. Pvt. Ltd. kunalghosh@gmail.com
 
-
-
-synthesis of verilog code
-About Yosys
-Yosys is a framework for Verilog RTL synthesis. It currently has extensive Verilog-2005 support and provides a basic set of synthesis algorithms for various application domains.
-
-more at https://yosyshq.net/yosys/
-To install yosys follow the instructions in this github repository
-
-https://github.com/YosysHQ/yosys
-
-note: Identify the .lib file path in cloned folder and change the path in highlighted text to indentified path
-image
-
-to synthesize
-$   yosys
-$   yosys>    script yosys_run.sh
-to see diffarent types of cells after synthesys
-$   yosys>    stat
-to generate schematics
-$   yosys>    show
-Contributors
-Sanampudi Gopala Krishna Reddy
-Kunal Ghosh
-Acknowledgments
-Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.
-Contact Information
-Sanampudi Gopala Krishna Reddy, Postgraduate Student, International Institute of Information Technology, Bangalore svgkr7@gmail.com
-Kunal Ghosh, Director, VSD Corp. Pvt. Ltd. kunalghosh@gmail.com
-References:
-FPGA4Student https://www.fpga4student.com/2017/08/verilog-code-for-pwm-generator.html
+## References
+* https://www.fpga4student.com/2017/08/verilog-code-for-pwm-generator.html
+* https://www.realdigital.org/doc/6136c69c3acc4bf52bc2653a067e36cc
