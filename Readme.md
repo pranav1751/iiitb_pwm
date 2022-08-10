@@ -20,22 +20,26 @@ PWM generator is used in many applications like:
 In a PWM circuit, the pulse frequency is created using a comparator that resets a pulse-window counter, and the duty cycle is set by a comparator that drives the output waveform low whenever the count value is greater than the duty cycle value. Here, we have two buttons to either increase or decrease the duty cycle by 10% as shown above.
 
 ## Tools installation
-The following tools need to be installed:
+Install the following tools with commands given (for linux):
 * Verilog
 * GTKwave
 * Yosys
+```
+$   sudo apt-get update
+$   sudo apt-get install iverilog gtkwave
+$   sudo apt-get install -y yosys
+```
 
 ## Functional Simulation
 Use the following commands to clone the github repo and run the files:
-'''
-  sudo apt install -y git
-   sudo apt install -y git
+```
+$   sudo apt install -y git
 $   git clone https://github.com/pranav1751/iiitb_pwm
 $   cd iiitb_pwm
 $   iverilog iiitb_pwm.v iiitb_pwm_tb.v
 $   ./a.out
 $   gtkwave pwm.vcd
-'''  
+```  
 ## Functional Characteristics
 The simulation results when increasing duty cycle
 ![image](https://user-images.githubusercontent.com/110840360/183490276-91787469-5c75-4f2f-8465-82a4288d1807.png)
