@@ -36,7 +36,7 @@ Use the following commands to clone the github repo and run the files:
 $   sudo apt install -y git
 $   git clone https://github.com/pranav1751/iiitb_pwm
 $   cd iiitb_pwm
-$   iverilog iiitb_pwm.v iiitb_pwm_tb.v
+$   iverilog iiitb_pwm_gen.v iiitb_pwm_gen_tb.v
 $   ./a.out
 $   gtkwave pwm.vcd
 ```  
@@ -46,6 +46,34 @@ The simulation results when increasing duty cycle
 The simulation results when decreasing duty cycle
 ![image](https://user-images.githubusercontent.com/110840360/183490364-4f771446-0e22-4747-8c1b-be7f25e4a3f9.png)
 
+## Generating GLS with yosys
+Note: in the yosys_run.sh file, change the path name for the lib file as it is in your directory
+```
+# read design
+# read_liberty -lib /media/psf/Home/Stark/Education/ASIC/iiitb_pwm_gen/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_verilog iiitb_pwm_gen.v
+
+# generic synthesis
+synth -top iiitb_pwm_gen
+
+# mapping to mycells.lib
+
+dfflibmap -liberty /home/imt2020544/iiitb_pwm/lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty /home/imt2020544/iiitb_pwm/lib/sky130_fd_sc_hd__tt_025C_1v80.lib -script +strash;scorr;ifraig;retime,{D};strash;dch,-f;map,-M,1,{D}
+clean
+flatten
+# write synthesized design
+write_verilog -noattr iiitb_pwm_synth.v
+# stat
+# show
+```
+Use the following commands to generate the Gate Level Simulation file from the initial iiitb_pwm_gen.v 
+```
+$ iverilog -DFUNCTIONAL -DUNIT_DELAY=#1 primitives.v sky130_fd_sc_hd.v iiitb_pwm_gen_synth.v iiitb_pwm_gen_tb.v
+$ ./a.out
+$ gtkwave pwm.vcd
+```
+note: I extracted the files primitives.v sky130_fd_sc_hd.v out of the verilog_model folder and kept them in the main folder as there was an error accessing them inside the folder for some unknown reason.
 ## Contributors
 * Pranav Vajreshwari, iMtech2020 IIITB
 * Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.
