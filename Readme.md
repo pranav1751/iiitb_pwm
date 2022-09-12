@@ -74,6 +74,11 @@ $ ./a.out
 $ gtkwave pwm.vcd
 ```
 note: I extracted the files primitives.v sky130_fd_sc_hd.v out of the verilog_model folder and kept them in the main folder as there was an error accessing them inside the folder for some unknown reason.
+
+##Physical design with OpenLane
+OpenLANE is an automated RTL to GDSII flow based on several components including OpenROAD, Yosys, Magic, Netgen, Fault, OpenPhySyn, CVC, SPEF-Extractor and custom methodology scripts for design exploration and optimization.
+Prerequisites:
+#docker
 ## Contributors
 * Pranav Vajreshwari, iMtech2020 IIITB
 * Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.
