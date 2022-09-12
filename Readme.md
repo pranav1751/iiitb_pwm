@@ -75,13 +75,120 @@ $ gtkwave pwm.vcd
 ```
 note: I extracted the files primitives.v sky130_fd_sc_hd.v out of the verilog_model folder and kept them in the main folder as there was an error accessing them inside the folder for some unknown reason.
 
-##Physical design with OpenLane
-OpenLANE is an automated RTL to GDSII flow based on several components including OpenROAD, Yosys, Magic, Netgen, Fault, OpenPhySyn, CVC, SPEF-Extractor and custom methodology scripts for design exploration and optimization.
+## Physical design with OpenLane
+OpenLane is an automated RTL to GDSII flow based on several components including OpenROAD, Yosys, Magic, Netgen, CVC, SPEF-Extractor, KLayout and a number of custom scripts for design exploration and optimization. The flow performs all ASIC implementation steps from RTL all the way down to GDSII.\
+Read more and installation guide at [https://github.com/The-OpenROAD-Project/OpenLane](https://github.com/The-OpenROAD-Project/OpenLane)\\
+Installation
 Prerequisites:
-#docker
+* docker installation guide: [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
+## Magic
+Magic is a venerable VLSI layout tool, written in the 1980's at Berkeley by John Ousterhout, now famous primarily for writing the scripting interpreter language Tcl. Due largely in part to its liberal Berkeley open-source license, magic has remained popular with universities and small companies. The open-source license has allowed VLSI engineers with a bent toward programming to implement clever ideas and help magic stay abreast of fabrication technology. However, it is the well thought-out core algorithms which lend to magic the greatest part of its popularity. Magic is widely cited as being the easiest tool to use for circuit layout, even for people who ultimately rely on commercial tools for their product design flow.\\
+More about magic and installation guide at [http://opencircuitdesign.com/magic/index.html](http://opencircuitdesign.com/magic/index.html)
+## Genrating Layout with existing cells in OpenLane
+run the following commands on the terminal:
+```
+$   cd OpenLane/
+$   cd designs/
+$   mkdir iiitb_pwm_gen
+$   cd iiitb_pwm_gen/
+$   wget https://raw.githubusercontent.com/pranav1751/iiitb_pwm_gen/main/config.json
+$   mkdir src
+$   cd src/
+$   wget https://raw.githubusercontent.com/pranav1751/iiitb_pwm_gen/main/iiitb_pwm_gen.v
+$   cd ../../../
+$   sudo make mount
+$   ./flow.tcl -design iiitb_pwm_gen!
+```
+[Screenshot from 2022-09-11 18-22-37](https://user-images.githubusercontent.com/110840360/189714149-468fa4b0-0902-41b6-92e0-8b8d24e28a7d.png)
+
+The layout files for the run are created in iiitb_pwm_gen/runs. Find the most recent run, it has all the files, and the def physical layout files.\\ Using magic to view the .def files.
+* Go to the folder where the final def file is located, here it is, /home/ubuntu/OpenLane/designs/iiitb_pwm/runs/RUN_2022.09.11_12.50.55/results/final/def 
+* Run the command
+```
+ magic -T /home/ubuntu/OpenLane/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../../tmp/merged.nom.lef def read iiitb_pwm_gen.def &
+
+```
+The following window appears, showing the layout
+
+![Screenshot from 2022-09-11 18-30-45](https://user-images.githubusercontent.com/110840360/189715252-74031e94-6dfe-419d-afca-a7c008f4eaba.png)
+## Including a custom cell in the layout
+Lets include in library and in the final layout. Clone the vsdcelldesign repo in Openlane/ using the following command
+```
+$ git clone https://github.com/nickson-jose/vsdstdcelldesign
+```
+copy sky130A.tech to vsdstdcelldesign directory
+Viewing the vsdinv cell
+'''
+$ magic -T sky130A.tech sky130_inv.mag 
+'''
+![Screenshot from 2022-09-11 18-35-06](https://user-images.githubusercontent.com/110840360/189715991-78e7a3e9-b757-4c8f-945d-fc88c2c01a11.png)
+in tkcon terminal using the following, generate the lef file
+```
+% lef write sky130_vsdinv
+```
+![Screenshot from 2022-09-11 18-37-23](https://user-images.githubusercontent.com/110840360/189716703-204aac45-41b2-4009-857f-ee840ccfdd26.png)
+Copy the generated lef file to designs/iiit_pwm_gen/src. Also copy lib files from vsdcelldesign/libs to designs/iiit_pwm_gen/src. /
+Open the OpenLane directory and run the following commands:
+```
+$ sudo make mount
+$ ./flow.tcl -interactive
+% package require openlane 0.9
+% prep -design iiitb_pwm_gen
+% set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+% add_lefs -src $lefs
+```
+
+![Screenshot from 2022-09-11 18-43-37](https://user-images.githubusercontent.com/110840360/189718806-d87b12f7-01ee-47c1-a19c-8e032e091f61.png)
+```
+
+% run_synthesis
+% run_floorplan
+% run_placement
+% run_cts
+% run_routing
+```
+## Stats
+Pre synthesis stats
+
+![Screenshot from 2022-09-11 18-45-37](https://user-images.githubusercontent.com/110840360/189718924-da80876a-1fbd-4025-bd69-50334954d978.png)
+
+Post synthesis stats
+![Screenshot from 2022-09-11 22-17-49](https://user-images.githubusercontent.com/110840360/189718977-c5340c48-32c5-4dc8-b170-cbcafb8f6b48.png)
+
+## Layout including vsdinv
+![Screenshot from 2022-09-11 22-31-32](https://user-images.githubusercontent.com/110840360/189719018-9207f33c-1a87-437a-b641-a933b60e57bd.png)
+
+```
+% getcell sky130_vsdinv
+```
+
+![Screenshot from 2022-09-11 22-32-50](https://user-images.githubusercontent.com/110840360/189719215-f61d01f3-292b-46db-9d68-2abac5fbea97.png)
+
+This shows that vsdinv cell is included.
+![Screenshot from 2022-09-11 22-33-55](https://user-images.githubusercontent.com/110840360/189719104-f16e868a-a2f3-4356-8e00-d493e78ae134.png)
+![Screenshot from 2022-09-12 23-40-52](https://user-images.githubusercontent.com/110840360/189725948-89fe990a-68a9-46b4-845e-18fbc4d14f1e.png)
+
+![Screenshot from 2022-09-12 23-49-26](https://user-images.githubusercontent.com/110840360/189727643-0c18b36d-0ee2-4e54-a8e6-d52aa6791c4c.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Contributors
 * Pranav Vajreshwari, iMtech2020 IIITB
 * Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.
+
 
 ## Acknowledgements
 * Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.
@@ -93,3 +200,4 @@ Prerequisites:
 ## References
 * https://www.fpga4student.com/2017/08/verilog-code-for-pwm-generator.html
 * https://www.realdigital.org/doc/6136c69c3acc4bf52bc2653a067e36cc
+
