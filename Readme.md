@@ -156,6 +156,11 @@ Post synthesis stats
 ![Screenshot from 2022-09-11 22-17-49](https://user-images.githubusercontent.com/110840360/189718977-c5340c48-32c5-4dc8-b170-cbcafb8f6b48.png)
 
 ## Layout including vsdinv
+To view the layout in magic, go to results/routing in your runs folder and enter the following command:
+```
+ magic -T /home/ubuntu/OpenLane/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.nom.lef def read iiitb_pwm_gen.def &
+ ```
+ Note: Change the directories for your PC.
 ![Screenshot from 2022-09-11 22-31-32](https://user-images.githubusercontent.com/110840360/189719018-9207f33c-1a87-437a-b641-a933b60e57bd.png)
 
 ```
