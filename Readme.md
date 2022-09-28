@@ -181,12 +181,51 @@ This shows that vsdinv cell is included.
 
 ![Screenshot from 2022-09-13 00-21-00](https://user-images.githubusercontent.com/110840360/189733063-dff788fc-13d1-4fe6-9b32-e9ef09c062d7.png)
 
+## Performance Analysis using OpenSTA
+OpenSTA is a gate level static timing verifier. As a stand-alone executable it can be used to verify the timing of a design using standard file formats.
+OpenSTA uses a TCL command interpreter to read the design, specify timing constraints and print timing reports. Read more at [OpenSTA Github](https://github.com/The-OpenROAD-Project/OpenSTA)
+After opening openlane, enter sta to open it.
+Place the following files in the pdks/sky130A directory (from runs/results/ctc)
+![WhatsApp Image 2022-09-28 at 12 44 51 PM](https://user-images.githubusercontent.com/110840360/192720018-e16db3a1-06a5-4dc4-9461-47c6b17e9a56.jpeg)
+
+Run the following commands:
+```
+%	read_liberty -min /home/ubuntu/OpenLane/pdks/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__ff_n40C_1v56.lib
+%	read_liberty -max /home/ubuntu/OpenLane/pdks/sky130A/libs.ref/sky130_fd_sc_hd/lib/sky130_fd_sc_hd__ff_n40C_1v56.lib
+%	read_verilog /home/ubuntu/OpenLane/pdks/sky130A/iiitb_pwm_gen.v
+%	link_design iiitb_pwm_gen
+%	read_sdc /home/ubuntu/OpenLane/pdks/sky130A/iiitb_pwm_gen.sdc
+%	set_propagated_clock [all_clocks]
+%	report_checks
+
+%	report_checks -from _247_ -to _244_
+%	report_checks -from  _247_ -to _245_
+```
 
 
+![Screenshot from 2022-09-28 13-10-33](https://user-images.githubusercontent.com/110840360/192720468-0fdea6fe-1a44-489c-86f6-56d36426411c.png)
 
+## Key Parameters
 
+Post Synthesis gate count = 177
 
+![Screenshot from 2022-09-28 09-54-52](https://user-images.githubusercontent.com/110840360/192708755-c9096f49-32d6-48c7-a2d4-00a4c4e5a4e2.png)
 
+Area = 9064.8 micron^2
+
+![Screenshot from 2022-09-28 10-49-39](https://user-images.githubusercontent.com/110840360/192707968-46cbba3c-bbd7-440f-9b8d-60affdb76363.png)
+
+Performance = 272.47 MHz
+
+![Screenshot from 2022-09-28 13-10-33](https://user-images.githubusercontent.com/110840360/192718659-a5a08ce2-e8bd-483b-b4b2-e490e1b37eb2.png)
+
+Flipflop/Standard cell ratio = 40/177 = 0.2259
+
+![Screenshot from 2022-09-28 11-01-11](https://user-images.githubusercontent.com/110840360/192708348-1874a501-4166-4a10-9b11-28a083dfb5c2.png)
+
+Power consumed = 0.141mW
+
+![Screenshot from 2022-09-28 11-08-31](https://user-images.githubusercontent.com/110840360/192708511-96e14c58-c765-4ffc-ae03-de473506a486.png)
 
 
 
@@ -194,14 +233,18 @@ This shows that vsdinv cell is included.
 
 ## Contributors
 * Pranav Vajreshwari, iMtech2020 IIITB
+
 * Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.
+
 
 
 ## Acknowledgements
 * Kunal Ghosh, Director, VSD Corp. Pvt. Ltd.
 
+
 ## Contact information
 * Pranav Vajreshwari, Pranav.Vajreshwari@iitb.ac.in
+
 * Kunal Ghosh, Director, VSD Corp. Pvt. Ltd. kunalghosh@gmail.com
 
 ## References
